@@ -139,10 +139,10 @@ paths:
           schema:
             type: integer
             default: 5
-        - name: exluded_tags
+        - name: excluded_tags
           in: query
           required: false
-          description: A array of tags to exlude for this card
+          description: An array of tags to exclude for this card
           schema:
             type: array
             default: []
