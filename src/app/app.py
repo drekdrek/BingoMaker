@@ -1,6 +1,8 @@
 import random
 
-from flask import Flask, current_app, render_template, request
+import requests
+from flask import Flask, jsonify, render_template, request
+from flask_cors import CORS
 
 from data.file import FileTilePoolDB
 from data.persistence import TilePoolDB, tile_to_dict
@@ -18,32 +20,19 @@ def create_app() -> Flask:
     def index():
         return render_template("index.html")
 
-    app.register_blueprint(tilepools.bp)
+    @app.route("/api/v1/bingocard/<tilesetId>")
+    def generate_card(tilesetId):
+        size = request.args.get("size", 5, type=int)
+        board = Board(
+            read_text("nouns"), size=size, free_square=False, seed=int(tilesetId)
+        )
+        board.id = str(tilesetId)
+        return jsonify(json.loads(json.dumps(board, cls=BoardEncoder)))
 
-    @app.route("/bingocard/<tilepoolId>")
-    def generate_card(tilepoolId: str):
-        try:
-            size = int(request.args.get("size", 5))
-            seed = int(request.args.get("seed", random.randint(0, 1 << 16)))
-        except (ValueError, TypeError):
-            return "Invalid input or request parameters", 400
-
-        db = current_app.config["DB"]
-        if not isinstance(db, TilePoolDB):
-            return "internal server error", 500
-
-        if (result := db.get_tile_pool(tilepoolId)) is None:
-            return "Tile pool not found", 404
-
-        pool = result["tiles"]
-
-        # excluded_tags = request.args.get("excluded_tags")
-        board = Board(pool, size=size, free_square=pool.free is not None, seed=seed)
-        board.id = str(seed)
-        return {
-            "id": board.id,
-            "size": board.size,
-            "grid": [tile_to_dict(tile) for row in board.board for tile in row],
-        }
+    @app.route("/tilesets")
+    def tilesets():
+        #response = requests.get("api/v1/tilesets")
+        #tilesets = response.json()
+        return render_template('tilesets.html', tilesets=tilesets)
 
     return app
