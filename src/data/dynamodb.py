@@ -1,5 +1,6 @@
 import contextlib
 import datetime
+from collections.abc import Iterable
 from uuid import uuid4
 
 import boto3
