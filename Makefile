@@ -4,10 +4,10 @@ DEPLOY_NAME := BingoMaker
 DEPLOY_WORKERS := 3
 DEPLOY_BIND := 0.0.0.0:80
 
-all: lint test
+all: lint
 
 lint:
-	@uv run ruff check
+	uv run ruff check
 
 lint-fix:
 	uv run ruff check --fix
@@ -27,12 +27,7 @@ deploy:
 	"app:create_app()"
 
 test:
-	@uv run pytest
-
-test-full:
-	@docker compose up -d
-	@uv run pytest
-	@docker compose down
+	uv run pytest
 
 clean:
 	uv run ruff clean
