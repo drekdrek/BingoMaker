@@ -1,0 +1,81 @@
+/* Bingo Board Container */
+.bingo-board {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+  margin: 0 auto;
+
+}
+
+/* Bingo Cell Styles */
+.bingo-cell {
+  cursor: pointer;
+  box-sizing: border-box;
+  border: 1px solid #333;
+  font-size: 1.5em;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+  transition: background-color 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width:175px;
+  aspect-ratio: 1 / 1; /* Makes the cell a square */
+}
+
+/* Hover and Marked States */
+.bingo-cell:hover {
+  background-color: #c7fd9a;
+}
+
+.bingo-cell.marked {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+  .bingo-board {
+    gap: 3px;
+  }
+  .bingo-cell {
+    font-size: 1em;
+  }
+}
+
+/* Other Styles */
+#welcome-section {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+#bingo-section .text-center h2 {
+  font-size: 2em;
+}
+
+#bingo-section .text-center hr {
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid #333;
+}
+
+.btn-custom {
+  padding: 10px 20px;
+  font-size: 1em;
+}
+
+#saved-cards-list li {
+  cursor: pointer;
+}
+
+.modal-body textarea {
+  resize: vertical;
+}
+
+.modal-content {
+  border-radius: 10px;
+}
