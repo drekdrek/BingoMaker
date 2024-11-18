@@ -5,19 +5,13 @@ on:
     types: [opened, ready_for_review, synchronize]
   push:
     branches:
-      '**'
+      '**' # all branches
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Start LocalStack
-        uses: LocalStack/setup-localstack@v0.2.3
-        with:
-          image-tag: 'latest'
-          install-awslocal: 'true'
-
       - uses: actions/checkout@v4
 
       - name: Install uv
@@ -34,9 +28,4 @@ jobs:
         run: uv sync --all-extras --dev
 
       - name: Run pytest
-        env:
-          LOCALSTACK_HOSTNAME: localhost
-          AWS_ACCESS_KEY_ID: notARealAccessKey
-          AWS_SECRET_ACCESS_KEY: notARealSecretKey
-          AWS_DEFAULT_REGION: us-east-1
         run: uv run pytest tests

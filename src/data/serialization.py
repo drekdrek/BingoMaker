@@ -12,7 +12,7 @@ class BoardEncoder(json.JSONEncoder):
     def default(self, o: Any) -> Any:
         match o:
             # fields that shouldn't be serialized
-            case TilePool():
+            case TilePool() | list(list(bool())):
                 return ""
             case Board():
                 return {
