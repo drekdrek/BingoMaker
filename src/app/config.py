@@ -1,4 +1,5 @@
 import os
+import boto3
 
 from data import DynamoTilePoolDB, FileTilePoolDB, MemoryTilePoolDB
 from images import (
@@ -12,6 +13,7 @@ from images import (
 class Config:
     TESTING = False
     DEBUG = False
+    SECRET_KEY = "07c56596b48f48b3a749a6969e64fadc"
 
     @property
     def DB(self):
@@ -71,6 +73,14 @@ class LocalAWSConfig(Config):
 
 
 class CloudAWSConfig(Config):
+    AWS_REGION = "us-east-1"
+    AWS_COGNITO_DOMAIN = "https://bingomaker.auth.us-east-1.amazoncognito.com"
+    AWS_COGNITO_REDIRECT_URL = "http://localhost:8080/postlogin"
+    AWS_COGNITO_LOGOUT_URL = "http://localhost:8080/postlogout"
+    AWS_COGNITO_REFRESH_FLOW_ENABLED = True
+    AWS_COGNITO_REFRESH_COOKIE_ENCRYPTED = True
+    AWS_COGNITO_REFRESH_COOKIE_AGE_SECONDS = 86400
+
     @property
     def DB(self):
         return DynamoTilePoolDB()
@@ -78,3 +88,21 @@ class CloudAWSConfig(Config):
     @property
     def IMAGES(self):
         return S3ImageManager(os.environ["S3_BUCKET_NAME"], LocalReferenceCounts("counts"))
+
+    @property
+    def AWS_COGNITO_USER_POOL_CLIENT_SECRET(self):
+        client = boto3.client('secretsmanager')
+        
+        return client.get_secret_value(SecretId='CognitoUserPoolClientSecret')['SecretString']
+    
+    @property
+    def AWS_COGNITO_USER_POOL_CLIENT_ID(self):
+        client = boto3.client('secretsmanager')
+        
+        return client.get_secret_value(SecretId='CognitoUserPoolClientId')['SecretString']
+    
+    @property
+    def AWS_COGNITO_USER_POOL_ID(self):
+        client = boto3.client('secretsmanager')
+        
+        return client.get_secret_value(SecretId='CognitoUserPoolId')['SecretString']

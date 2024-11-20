@@ -5,7 +5,7 @@ from flask import Flask, current_app, render_template, request
 from data.persistence import TilePoolDB, tile_to_dict
 from game.game import Board
 
-from . import image_routes, tilepool_routes
+from . import auth_routes, image_routes, tilepool_routes
 from .config import Config, LocalDiskConfig
 
 
@@ -13,6 +13,7 @@ def create_app(config: type[Config] = LocalDiskConfig) -> Flask:
     app = Flask(__name__)
 
     app.config.from_object(config)
+    auth_routes.cognito_app(app)
 
     @app.route("/")
     def index():
@@ -24,6 +25,7 @@ def create_app(config: type[Config] = LocalDiskConfig) -> Flask:
 
     app.register_blueprint(tilepool_routes.bp)
     app.register_blueprint(image_routes.bp)
+    app.register_blueprint(auth_routes.bp)
 
     @app.route("/bingocard/<tilepoolId>")
     def generate_card(tilepoolId: str):
