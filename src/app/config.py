@@ -75,12 +75,22 @@ class LocalAWSConfig(Config):
 
 class CloudAWSConfig(Config):
     AWS_REGION = "us-east-1"
+    _client = boto3.client("secretsmanager", region_name=AWS_REGION)
     AWS_COGNITO_DOMAIN = "https://bingomaker.auth.us-east-1.amazoncognito.com"
-    AWS_COGNITO_REDIRECT_URL = "http://localhost:8080/postlogin"
-    AWS_COGNITO_LOGOUT_URL = "http://localhost:8080/postlogout"
+    AWS_COGNITO_REDIRECT_URL = "https://bingo.drek.cloud/postlogin"
+    AWS_COGNITO_LOGOUT_URL = "https://bingo.drek.cloud/postlogout"
     AWS_COGNITO_REFRESH_FLOW_ENABLED = True
     AWS_COGNITO_REFRESH_COOKIE_ENCRYPTED = True
     AWS_COGNITO_REFRESH_COOKIE_AGE_SECONDS = 86400
+    AWS_COGNITO_USER_POOL_CLIENT_SECRET = _client.get_secret_value(
+        SecretId="CognitoUserPoolClientSecret"
+    )["SecretString"]
+    AWS_COGNITO_USER_POOL_CLIENT_ID = _client.get_secret_value(SecretId="CognitoUserPoolClientId")[
+        "SecretString"
+    ]
+    AWS_COGNITO_USER_POOL_ID = _client.get_secret_value(SecretId="CognitoUserPoolId")[
+        "SecretString"
+    ]
 
     @property
     def DB(self):
@@ -89,21 +99,3 @@ class CloudAWSConfig(Config):
     @property
     def IMAGES(self):
         return S3ImageManager(os.environ["S3_BUCKET_NAME"], LocalReferenceCounts("counts"))
-
-    @property
-    def AWS_COGNITO_USER_POOL_CLIENT_SECRET(self):
-        client = boto3.client('secretsmanager')
-        
-        return client.get_secret_value(SecretId='CognitoUserPoolClientSecret')['SecretString']
-    
-    @property
-    def AWS_COGNITO_USER_POOL_CLIENT_ID(self):
-        client = boto3.client('secretsmanager')
-        
-        return client.get_secret_value(SecretId='CognitoUserPoolClientId')['SecretString']
-    
-    @property
-    def AWS_COGNITO_USER_POOL_ID(self):
-        client = boto3.client('secretsmanager')
-        
-        return client.get_secret_value(SecretId='CognitoUserPoolId')['SecretString']
