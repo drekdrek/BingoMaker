@@ -16,8 +16,7 @@ def aws_create_app() -> Flask:
 def create_app(config_class: type[Config] = LocalDiskConfig, TESTING: bool = False) -> Flask:
     app = Flask(__name__)
 
-    config = config_class()
-    app.config.from_object(config)
+    app.config.from_object(config_class())
     app.config["TESTING"] = TESTING
     auth_routes.cognito_app(app)
 
@@ -60,4 +59,3 @@ def create_app(config_class: type[Config] = LocalDiskConfig, TESTING: bool = Fal
         }
 
     return app
-
