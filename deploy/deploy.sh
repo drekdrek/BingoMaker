@@ -44,9 +44,13 @@ INSTANCE_ID=$(aws ec2 run-instances --image-id "ami-06b21ccaeff8cd686" --instanc
     --private-dns-name-options '{"HostnameType":"ip-name","EnableResourceNameDnsARecord":true,"EnableResourceNameDnsAAAARecord":false}' \
     --user-data file://deploy/userdata.sh \
     --count "1" \
+    --iam-instance-profile '{"Arn": "arn:aws:iam::620401114971:instance-profile/LabInstanceProfile" }' \
     --query "Instances[*].InstanceId" \
     --output text
 )
+
+# echo "Associating IAM Instance Profile..."
+# aws ec2 associate-iam-instance-profile --instance-id $INSTANCE_ID --iam-instance-profile '{"Name": "LabRole" }'
 
 echo "EC2 instance created with ID: $INSTANCE_ID"
 
@@ -76,6 +80,7 @@ USER_POOL_ID=$(aws cognito-idp create-user-pool \
         {"Name":"name","AttributeDataType":"String","DeveloperOnlyAttribute":false,"Mutable":true,"Required":false}
     ]' \
     --alias-attributes email \
+    --username-configuration "CaseSensitive=false" \
     --admin-create-user-config AllowAdminCreateUserOnly=false \
     --query 'UserPool.Id' --output text)
 
@@ -96,6 +101,13 @@ OUTPUT=$(aws cognito-idp create-user-pool-client \
     --allowed-o-auth-flows implicit \
     --allowed-o-auth-scopes openid email profile \
     --supported-identity-providers COGNITO \
+    --token-validity-units AccessToken=minutes,IdToken=minutes,RefreshToken=days \
+    --read-attributes email name \
+    --write-attributes email name \
+    --prevent-user-existence-errors ENABLED \
+    --explicit-auth-flows ALLOW_REFRESH_TOKEN_AUTH ALLOW_USER_SRP_AUTH \
+    --allowed-o-auth-flows code \
+    --allowed-o-auth-flows-user-pool-client \
     --callback-urls $AWS_COGNITO_REDIRECT_URL \
     --generate-secret
 )
