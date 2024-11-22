@@ -1,4 +1,3 @@
-import boto3
 from flask import Blueprint, Flask, redirect
 from flask_cognito_lib import CognitoAuth
 from flask_cognito_lib.decorators import (
