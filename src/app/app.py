@@ -9,10 +9,11 @@ from . import auth_routes, image_routes, tilepool_routes
 from .config import Config, LocalDiskConfig
 
 
-def create_app(config: type[Config] = LocalDiskConfig) -> Flask:
+def create_app(config: type[Config] = LocalDiskConfig, TESTING: bool = False) -> Flask:
     app = Flask(__name__)
 
     app.config.from_object(config)
+    app.config["TESTING"] = TESTING
     auth_routes.cognito_app(app)
 
     @app.route("/")

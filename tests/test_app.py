@@ -102,7 +102,7 @@ def db_data(db: MemoryTilePoolDB):
 
 @pytest.fixture
 def app(db_data: TilePoolDB, image_manager: ImageManager):
-    app = create_app()
+    app = create_app(TESTING=True)
     app.config.update(TESTING=True, DB=db_data, IMAGES=image_manager)
     return app
 
