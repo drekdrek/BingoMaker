@@ -13,6 +13,13 @@ class Config:
     TESTING = False
     DEBUG = False
     SECRET_KEY = "07c56596b48f48b3a749a6969e64fadc"
+    AWS_REGION = "us-east-1"
+    AWS_COGNITO_DOMAIN = "https://bingomaker.auth.us-east-1.amazoncognito.com"
+    AWS_COGNITO_REDIRECT_URL = "https://bingo.drek.cloud/postlogin"
+    AWS_COGNITO_LOGOUT_URL = "https://bingo.drek.cloud/postlogout"
+    AWS_COGNITO_REFRESH_FLOW_ENABLED = True
+    AWS_COGNITO_REFRESH_COOKIE_ENCRYPTED = True
+    AWS_COGNITO_REFRESH_COOKIE_AGE_SECONDS = 86400
 
     @property
     def DB(self):
@@ -72,13 +79,6 @@ class LocalAWSConfig(Config):
 
 
 class CloudAWSConfig(Config):
-    AWS_REGION = "us-east-1"
-    AWS_COGNITO_DOMAIN = "https://bingomaker.auth.us-east-1.amazoncognito.com"
-    AWS_COGNITO_REDIRECT_URL = "https://bingo.drek.cloud/postlogin"
-    AWS_COGNITO_LOGOUT_URL = "https://bingo.drek.cloud/postlogout"
-    AWS_COGNITO_REFRESH_FLOW_ENABLED = True
-    AWS_COGNITO_REFRESH_COOKIE_ENCRYPTED = True
-    AWS_COGNITO_REFRESH_COOKIE_AGE_SECONDS = 86400
 
     @property
     def DB(self):
