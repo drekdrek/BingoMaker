@@ -24,7 +24,7 @@ deploy:
 	--workers $(DEPLOY_WORKERS) \
 	--log-syslog \
 	-p /tmp/BingoMaker.pid -n $(DEPLOY_NAME) \
-	"app:create_app()"
+	"app:aws_create_app()"
 
 test:
 	@uv run pytest -m "not localstack"
