@@ -6,7 +6,11 @@ from data.persistence import TilePoolDB, tile_to_dict
 from game.game import Board
 
 from . import auth_routes, image_routes, tilepool_routes
-from .config import Config, LocalDiskConfig
+from .config import CloudAWSConfig, Config, LocalDiskConfig
+
+
+def aws_create_app() -> Flask:
+    return create_app(CloudAWSConfig)
 
 
 def create_app(config: type[Config] = LocalDiskConfig, TESTING: bool = False) -> Flask:
