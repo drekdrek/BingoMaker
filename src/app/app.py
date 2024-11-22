@@ -13,9 +13,10 @@ def aws_create_app() -> Flask:
     return create_app(CloudAWSConfig)
 
 
-def create_app(config: type[Config] = LocalDiskConfig, TESTING: bool = False) -> Flask:
+def create_app(config_class: type[Config] = LocalDiskConfig, TESTING: bool = False) -> Flask:
     app = Flask(__name__)
 
+    config = config_class()
     app.config.from_object(config)
     app.config["TESTING"] = TESTING
     auth_routes.cognito_app(app)
@@ -23,7 +24,7 @@ def create_app(config: type[Config] = LocalDiskConfig, TESTING: bool = False) ->
     @app.route("/")
     def index():
         return render_template("index.html")
-    
+
     @app.route("/tilesets")
     def tilesets():
         return render_template("tilesets.html")
@@ -59,3 +60,4 @@ def create_app(config: type[Config] = LocalDiskConfig, TESTING: bool = False) ->
         }
 
     return app
+
